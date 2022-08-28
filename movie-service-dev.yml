@@ -18,3 +18,9 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
+
+info:
+  app:
+    name: movie-service
+    descripcription: Movie Service created for the exam
+    version: 1.0.0 
