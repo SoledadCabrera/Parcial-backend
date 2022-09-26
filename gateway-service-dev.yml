@@ -4,16 +4,45 @@ server:
 spring:
   cloud:
     gateway:
+      default-filters:
+        - name: LoggingFilter
       routes:
         - id: movieRoute
           uri: lb://movie-service
           predicates:
             - Path=/movies/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: moviesService
+                fallbackUri: forward:/fallback/movies
+        - id: serieRoute
+          uri: lb://serie-service
+          predicates:
+            - Path=/series/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: seriesService
+                fallbackUri: forward:/fallback/series
         - id: catalogRoute
           uri: lb://catalog-service
           predicates:
             - Path=/catalogs/**
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: catalogsService
+                fallbackUri: forward:/fallback/catalogs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+        
+info:
+  app:
+    name: ${spring.application.name}
+    description: Gateway Service created for exam
+    version: 1.0.0
