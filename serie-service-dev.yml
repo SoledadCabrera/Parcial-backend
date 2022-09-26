@@ -23,5 +23,5 @@ queue:
 info:
   app:
     name: ${spring.application.name}
-    description: Serie Service created for Final
+    description: Serie Service created for exam
     version: 1.0.0
