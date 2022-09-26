@@ -1,26 +1,29 @@
 server:
-  port: 8083
+  port: 8082
 
 spring:
-  eureka:
-    client:
-      service-url:
-        defaultZone: http://localhost:8761/eureka
+  rabbitmq:
+    username: guest
+    password: guest
+    host: rabbitmq
+    port: 5672
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1;
-    username: sa
-    password: sa
-  sql:
-    init:
-      data-locations: classpath:movie.sql
+    url: jdbc:mysql://mysqldb:3306/Movie
+    username: user
+    password: pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    defer-datasource-initialization: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
+
+queue:
+  movie:
+    name: Movie
 
 info:
   app:
-    name: movie-service
+    name: ${spring.application.name}
     descripcription: Movie Service created for the exam
-    version: 1.0.0 
+    version: 1.0.0
