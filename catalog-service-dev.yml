@@ -2,7 +2,47 @@ server:
   port: 8084
 
 spring:
-  eureka:
-    client:
-      service-url:
-        defaultZone: http://localhost:8761/eureka
+  rabbitmq:
+    username: guest
+    password: guest
+    host: rabbitmq
+    port: 5672
+  data:
+    mongodb:
+      authentication-database: admin
+      username: rootuser
+      password: rootpass
+      database: final_catalogs
+      port: 27017 #puerto privado contenedor Docker, no el publico
+      host: mongo-catalog
+
+queue:
+  serie:
+    name: Serie
+  movie:
+    name: Movie
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      catalog: #instancia con la que vamos a trabajar
+        slidingWindowType: COUNT_BASED #para trabajar con conteo en base a catidad o tiempo
+        slidingWindowSize: 5 #numero de llamadas que deben fallar
+        failureRateThreshold: 50 #porcentaje de fallos para pasar de "open" a "half-open"
+        automaticTransitionFromOpenToHalfOpenEnabled: true #habilitamos la transicion automatica de "half-open" a "open"
+        waitDurationInOpenState: 15000 #duracion en estado "open" (ms)
+        permittedNumberOfCallsInHalfOpenState: 3 # cantidad de llamados permitidos en estado "half-open"
+        registerHealthIndicator: true #hablilita a resilience4j a agregar info al endpoint /health de actuator
+        allowHealthIndicatorToFail: false #para pasar de status "UP" a "DOWN"
+
+#Habilitamos el endpoint de actuator
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: Catalog Service created for exam
+    version: 1.0.0
