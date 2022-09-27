@@ -14,7 +14,7 @@ spring:
       password: rootpass
       database: final_catalogs
       port: 27017 #puerto privado contenedor Docker, no el publico
-      host: mongo-catalog
+      host: mongodb
 
 queue:
   serie:
