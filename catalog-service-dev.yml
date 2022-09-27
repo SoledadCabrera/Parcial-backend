@@ -25,15 +25,35 @@ queue:
 resilience4j:
   circuitbreaker:
     instances:
-      catalog: #instancia con la que vamos a trabajar
-        slidingWindowType: COUNT_BASED #para trabajar con conteo en base a catidad o tiempo
-        slidingWindowSize: 5 #numero de llamadas que deben fallar
-        failureRateThreshold: 50 #porcentaje de fallos para pasar de "open" a "half-open"
-        automaticTransitionFromOpenToHalfOpenEnabled: true #habilitamos la transicion automatica de "half-open" a "open"
-        waitDurationInOpenState: 15000 #duracion en estado "open" (ms)
-        permittedNumberOfCallsInHalfOpenState: 3 # cantidad de llamados permitidos en estado "half-open"
-        registerHealthIndicator: true #hablilita a resilience4j a agregar info al endpoint /health de actuator
-        allowHealthIndicatorToFail: false #para pasar de status "UP" a "DOWN"
+      movies:
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 3
+        registerHealthIndicator: true
+        allowHealthIndicatorToFail: false
+      series: 
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 3
+        registerHealthIndicator: true
+        allowHealthIndicatorToFail: false
+        
+  retry:
+    instances:
+      movies:
+        maxAttempts: 3
+        waitDuration: 1000
+        retryExceptions[0]: feign.FeignException$InternalServerError
+      series:
+        maxAttempts: 3
+        waitDuration: 1000
+        retryExceptions[0]: feign.FeignException$InternalServerError
 
 #Habilitamos el endpoint de actuator
 management:
